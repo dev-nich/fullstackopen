@@ -11,6 +11,8 @@ const Button = ({text, count, setCount}) => {
   )
 }
 
+const StatisticLine = ({text, value}) => <p>{text} {value}</p>
+
 const Statistics = ({good, neutral, bad}) => {
 
   const getAll = () => good + neutral + bad
@@ -22,10 +24,9 @@ const Statistics = ({good, neutral, bad}) => {
   if(good > 0 || neutral > 0 || bad > 0 ){
     return (
       <>
-        <h2>Statistics</h2>
-        <p>good {good}</p>
-        <p>neutral {neutral}</p>
-        <p>bad {bad}</p>
+        <StatisticLine text="good" value={good} />
+        <StatisticLine text="neutral" value={neutral} />
+        <StatisticLine text="bad" value={bad} />
         <p>all {getAll()}</p>
         <p>average {getAverage()}</p>
         <p>positive {getPositive()}%</p>
@@ -35,11 +36,10 @@ const Statistics = ({good, neutral, bad}) => {
 
   return (
     <>
-      <h2>Statistics</h2>
       <p>No feedback given</p>
     </>
   )
-  
+
 }
 
 const App = () => {
@@ -54,6 +54,7 @@ const App = () => {
       <Button text="good" count={good} setCount={setGood}/>
       <Button text="neutral" count={neutral} setCount={setNeutral}/>
       <Button text="bad" count={bad} setCount={setBad}/>
+      <h2>Statistics</h2>
       <Statistics good={good} neutral={neutral} bad={bad}/>
     </div>
   )
