@@ -21,19 +21,35 @@ const App = () => {
 
   const getRandomNumber = (max, min) => Math.floor(Math.random() * (max - min + 1) + min)
 
-  const addVote =  (selected, votes, setVotes) =>  {
-    console.log(selected)
+  const addVote =  (selected) =>  {
     let copy = [...votes]
-    console.log(copy)
     const selectedItem = copy[selected]
     copy[selected] = selectedItem+1
     setVotes(copy)
   }
+
+  const getMostVotes =  () => {
+    const maxValue = Math.max(...votes);
+    return votes.indexOf(maxValue); 
+  }
+
+  const AnecdoteSection = ({title, count}) => {
+    return (
+      <>
+        <h2>{title}</h2>
+        <p>{anecdotes[count]}</p>
+        <p>has {votes[count]} votes</p>
+      </>
+    )
+  }
+
+
   return (
     <div>
-      <p>{anecdotes[selected]}</p>
-      <button onClick={() => addVote(selected, votes, setVotes)}>vote</button>
+      <AnecdoteSection title="Anecdote of the Day" count={selected} />
+      <button onClick={() => addVote(selected)}>vote</button>
       <button onClick={randomSelect}>next anecdote</button>
+      <AnecdoteSection title="Anecdote with most votes" count={getMostVotes()} />
     </div>
   )
 }
