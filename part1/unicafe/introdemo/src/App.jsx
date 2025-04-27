@@ -11,7 +11,7 @@ const Button = ({text, count, setCount}) => {
   )
 }
 
-const StatisticLine = ({text, value}) => <p>{text} {value}</p>
+const StatisticLine = ({text, value}) => <tr><td>{text}</td><td>{value}</td></tr>
 
 const Statistics = ({good, neutral, bad}) => {
 
@@ -24,12 +24,25 @@ const Statistics = ({good, neutral, bad}) => {
   if(good > 0 || neutral > 0 || bad > 0 ){
     return (
       <>
-        <StatisticLine text="good" value={good} />
-        <StatisticLine text="neutral" value={neutral} />
-        <StatisticLine text="bad" value={bad} />
-        <p>all {getAll()}</p>
-        <p>average {getAverage()}</p>
-        <p>positive {getPositive()}%</p>
+      <table>
+        <tbody>
+          <StatisticLine text="good" value={good} />
+          <StatisticLine text="neutral" value={neutral} />
+          <StatisticLine text="bad" value={bad} />
+          <tr>
+            <td>all</td>
+            <td>{getAll()}</td>
+          </tr>
+          <tr>
+            <td>average</td>
+            <td>{getAverage()}</td>
+          </tr>
+          <tr>
+            <td>positive</td>
+            <td>{getPositive()}%</td>
+          </tr>
+        </tbody>
+      </table>
       </>
     )
   }
