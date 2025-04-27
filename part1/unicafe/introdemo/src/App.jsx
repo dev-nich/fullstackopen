@@ -19,17 +19,27 @@ const Statistics = ({good, neutral, bad}) => {
 
   const getPositive = () => (good / getAll()) * 100
 
+  if(good > 0 || neutral > 0 || bad > 0 ){
+    return (
+      <>
+        <h2>Statistics</h2>
+        <p>good {good}</p>
+        <p>neutral {neutral}</p>
+        <p>bad {bad}</p>
+        <p>all {getAll()}</p>
+        <p>average {getAverage()}</p>
+        <p>positive {getPositive()}%</p>
+      </>
+    )
+  }
+
   return (
     <>
       <h2>Statistics</h2>
-      <p>good {good}</p>
-      <p>neutral {neutral}</p>
-      <p>bad {bad}</p>
-      <p>all {getAll()}</p>
-      <p>average {getAverage()}</p>
-      <p>positive {getPositive()}%</p>
+      <p>No feedback given</p>
     </>
   )
+  
 }
 
 const App = () => {
