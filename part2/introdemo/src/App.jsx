@@ -1,58 +1,51 @@
-import Course from "./components/Course"
+import { useState } from 'react'
 
 const App = () => {
-  const courses = [
-    {
-      name: 'Half Stack application development',
-      id: 1,
-      parts: [
-        {
-          name: 'Fundamentals of React',
-          exercises: 10,
-          id: 1
-        },
-        {
-          name: 'Using props to pass data',
-          exercises: 7,
-          id: 2
-        },
-        {
-          name: 'State of a component',
-          exercises: 14,
-          id: 3
-        },
-        {
-          name: 'Redux',
-          exercises: 11,
-          id: 4
-        }
-      ]
-    }, 
-    {
-      name: 'Node.js',
-      id: 2,
-      parts: [
-        {
-          name: 'Routing',
-          exercises: 3,
-          id: 1
-        },
-        {
-          name: 'Middlewares',
-          exercises: 7,
-          id: 2
-        }
-      ]
+  const [persons, setPersons] = useState([
+    { name: 'Arto Hellas' }
+  ]) 
+  const [newName, setNewName] = useState('')
+  const [exist, setExist] = useState(false)
+  const isExist = (existName) => (persons.some(({name})=> name === existName))
+
+  
+  const addPerson = (event) => {
+    event.preventDefault()
+    const exist = isExist(newName)
+    setExist(exist)
+    if(!exist){
+      const newPerson = {name:`${newName}`};
+      setPersons(persons.concat(newPerson))
     }
-  ]
+  }
+
+  const handleNewName = (event) => {
+    setNewName(event.target.value)
+    setExist(isExist(event.target.value))
+  }
 
   return (
-    <>
-      <h1>Web Development Curriculum</h1>
-      {courses.map(item=><Course course={item} />)}
-    </>
+    <div>
+      <h2>Phonebook</h2>
+      <form onSubmit={addPerson}>
+        <div>
+          name: 
+          <input 
+          value={newName}
+          onChange={handleNewName}
+          />
+        </div>
+        <div>
+          <button type="submit">add</button>
+        </div>
+      </form>
+      <h2>Numbers</h2>
+      {persons.map(person => 
+         <div>{person.name}</div>
+        )}
+      {exist ? alert(`${newName} is already added to phonebook`) : '' }
+    </div>
   )
-  
 }
 
 export default App
