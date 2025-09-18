@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import Filter from './components/Filter'
+import PersonForm from './components/PersonForm'
+import Persons from './components/Persons'
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -12,78 +14,27 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [exist, setExist] = useState(false)
   const [filterParam, setFilterParam] = useState(null)
-  const isExist = (existName) => (persons.some(({name})=> name === existName))
-
-  
-  const addPerson = (event) => {
-    event.preventDefault()
-    const exist = isExist(newName)
-    setExist(exist)
-    if(!exist){
-      const newPerson = {
-        name:`${newName}`,
-        number:`${newNumber}`
-      };
-      setPersons(persons.concat(newPerson))
-    }
-  }
-
-  const handleNewName = (event) => {
-    setExist(false)
-    setNewName(event.target.value)
-  }
-  const handleNewNumber = (event) => {
-    setNewNumber(event.target.value)
-  }
-  const handleFilterParam = (event) => {
-    setExist(false)
-    setFilterParam(event.target.value)
-  }
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>
-          filter shown with
-          <input 
-          value={filterParam}
-          onChange={handleFilterParam}
-          />
-        </div>
-
-      <form onSubmit={addPerson}>
-      
-        <h2>Add a new</h2>
-        <div>
-          name: 
-          <input 
-          value={newName}
-          onChange={handleNewName}
-          />
-        </div>
-        <div>number: 
-        <input
-          type='tel' 
-          pattern="[0-9\-]+"
-          placeholder="00-000-000"
-          value={newNumber}
-          onChange={handleNewNumber}
-          />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-      <h2>Numbers</h2>
-      {
-        persons
-        .filter(
-          person => filterParam ? person.name.toLowerCase().includes(filterParam) : person.name
-        )
-        .map(
-          person => <div>{person.name} {person.number}</div>
-        )
-      }
+      <Filter 
+        filter={filterParam} 
+        setFilter={setFilterParam} 
+        setExist={setExist} 
+      />
+  
+      <h3>Add a new</h3>
+      <PersonForm
+        persons={persons}
+        newName={newName}
+        setNewName={setNewName}
+        newNumber={newNumber}
+        setNewNumber={setNewNumber}
+        setExist={setExist}
+      />
+      <h3>Numbers</h3>
+      <Persons persons={persons} filter={filterParam} />
       {exist ? alert(`${newName} is already added to phonebook`) : '' }
     </div>
   )

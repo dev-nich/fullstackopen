@@ -1,23 +1,18 @@
-
-
-
-const Filter = (filter, setFilter) => { 
-
+const Filter = ({filter, setFilter, setExist}) => { 
     const handleFilterParam = (event) => {
-        // setExist(false)
+        setExist(false)
         setFilter(event.target.value)
-      }
+    }
 
     return (
-    <div>
-        filter shown with
-        <input 
-        value={filter}
-        onChange={handleFilterParam}
-        />
-    </div>
+        <div>
+            filter shown with
+            <input 
+            value={filter}
+            onChange={handleFilterParam}
+            />
+        </div>
     )
-    
 }
 
 export default Filter
