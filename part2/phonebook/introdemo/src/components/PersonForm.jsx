@@ -4,7 +4,9 @@ const PersonForm = ({
     setNewName, 
     newNumber,
     setNewNumber,
-    persons
+    persons,
+    setPersons,
+    personsService
 }) => { 
 
     const handleNewName = (event) => {
@@ -25,9 +27,15 @@ const PersonForm = ({
         if(!exist){
           const newPerson = {
             name:`${newName}`,
-            number:`${newNumber}`
+            number:`${newNumber}`,
+            id: `${persons.length + 1}`,
           };
-          setPersons(persons.concat(newPerson))
+
+          const newPersons = persons.concat(newPerson)
+          
+          personsService
+            .create(newPerson)
+            .then(setPersons(newPersons))
         }
       }
 
