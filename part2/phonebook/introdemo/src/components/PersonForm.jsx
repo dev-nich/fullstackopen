@@ -6,7 +6,8 @@ const PersonForm = ({
     setNewNumber,
     persons,
     setPersons,
-    personsService
+    personsService,
+    setNotification
 }) => { 
 
     const handleNewName = (event) => {
@@ -19,6 +20,27 @@ const PersonForm = ({
     }
 
     const isExist = (existName) => (persons.some(({name})=> name === existName))
+
+    const setSuccessMessage = (name) => {
+       return {
+            level:"success",
+            message:`Added ${name}`
+       } 
+    }
+
+    const setErrorMessage = (name) => {
+        return {
+             level:"error",
+             message:`Cannot Add  ${name}`
+        } 
+     }
+
+     const setDefaultMessage = (name) => {
+        return {
+             level:null,
+             message:''
+        } 
+     }
 
     const addPerson = (event) => {
         event.preventDefault()
@@ -36,6 +58,14 @@ const PersonForm = ({
           personsService
             .create(newPerson)
             .then(setPersons(newPersons))
+            .then(()=>{
+                setNotification(setSuccessMessage(newName))
+                setTimeout(() => {setNotification(setDefaultMessage) }, 5000)
+            })
+            .catch(()=>{
+                setNotification(setSuccessMessage(newName))
+                setTimeout(() => {setNotification(setDefaultMessage) }, 5000)
+            })
         }
       }
 

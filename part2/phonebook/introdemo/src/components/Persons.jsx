@@ -2,8 +2,30 @@ const Persons = ({
     persons, 
     setPersons,
     filter, 
-    personsService
+    personsService,
+    setNotification
 }) => { 
+    const setSuccessMessage = (name) => {
+        return {
+             level:"success",
+             message:`Removed ${name}`
+        } 
+     }
+ 
+     const setErrorMessage = (name) => {
+         return {
+              level:"error",
+              message:`Information of  ${name} has already been removed from the server`
+         } 
+      }
+ 
+      const setDefaultMessage = (name) => {
+         return {
+              level:null,
+              message:''
+         } 
+      }
+
     const handleClick = (event) => {
         const data = event.target.dataset;
         const confirm = window.confirm(`Delete ${data.name}?`)
@@ -12,6 +34,14 @@ const Persons = ({
             .remove(data.id)
             .then((data)=>{
                 setPersons(persons.filter((person)=>person.id !== data.id))
+            })
+            .then(()=>{
+                setNotification(setSuccessMessage(data.name))
+                setTimeout(() => {setNotification(setDefaultMessage) }, 5000)
+            })
+            .catch(()=>{
+                setNotification(setErrorMessage(data.name))
+                setTimeout(() => {setNotification(setDefaultMessage) }, 5000)
             })
         }
     }

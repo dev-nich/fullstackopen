@@ -3,6 +3,8 @@ import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import personsService from './services/persons'
+import Notification from './components/Notification'
+import './index.css'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -10,6 +12,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [exist, setExist] = useState(false)
   const [filterParam, setFilterParam] = useState(null)
+  const [notification, setNotification] = useState({level:null, message:''})
 
 
   useEffect(()=>{
@@ -22,6 +25,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification notification={notification} />
       <Filter 
         filter={filterParam} 
         setFilter={setFilterParam} 
@@ -38,6 +42,7 @@ const App = () => {
         setNewNumber={setNewNumber}
         setExist={setExist}
         personsService={personsService}
+        setNotification={setNotification}
       />
       <h3>Numbers</h3>
       <Persons 
@@ -45,6 +50,7 @@ const App = () => {
         setPersons={setPersons}
         filter={filterParam} 
         personsService={personsService}
+        setNotification={setNotification}
       />
       {exist ? alert(`${newName} is already added to phonebook`) : '' }
     </div>
