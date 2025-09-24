@@ -12,6 +12,9 @@ morgan.token('body', function getBody (req) {
 const logger = morgan(':method :url :status :res[content-length] - :response-time ms :body')
 app.use(logger)
 
+const cors = require('cors')
+app.use(cors())
+
 
 let persons = [
     { 
@@ -91,7 +94,7 @@ const randomId = (min) => {
     response.status(204).end()
   })
   
-  const PORT = 3001
+  const PORT = process.env.PORT || 3001
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
   })
