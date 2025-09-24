@@ -12,9 +12,6 @@ morgan.token('body', function getBody (req) {
 const logger = morgan(':method :url :status :res[content-length] - :response-time ms :body')
 app.use(logger)
 
-const cors = require('cors')
-app.use(cors())
-
 app.use(express.static('dist'))
 
 
