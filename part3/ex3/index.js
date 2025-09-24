@@ -2,6 +2,16 @@ const express = require('express')
 const app = express()
 app.use(express.json())
 
+// logger middleware 
+const morgan = require('morgan')
+
+// display request body
+morgan.token('body', function getBody (req) {
+    return JSON.stringify(req.body)
+})
+const logger = morgan(':method :url :status :res[content-length] - :response-time ms :body')
+app.use(logger)
+
 
 let persons = [
     { 
@@ -85,3 +95,5 @@ const randomId = (min) => {
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
   })
+
+  
