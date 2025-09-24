@@ -1,0 +1,15 @@
+{
+  "name": "fullstackopen-ex3",
+  "version": "1.0.0",
+  "description": "Phonebook Backend",
+  "main": "index.js",
+  "scripts": {
+    "dev" : "node --watch index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Christine Sapuras",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
