@@ -2,6 +2,8 @@ const express = require('express')
 const app = express()
 app.use(express.json())
 
+app.use(express.static('dist'))
+
 // logger middleware 
 const morgan = require('morgan')
 
@@ -12,29 +14,39 @@ morgan.token('body', function getBody (req) {
 const logger = morgan(':method :url :status :res[content-length] - :response-time ms :body')
 app.use(logger)
 
-app.use(express.static('dist'))
-
 const Person = require('./models/person')
-
-const max = 200;
-
-const randomId = (min) => {
-    const minCeiled = Math.ceil(min);
-    const maxFloored = Math.floor(max);
-    return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled); 
-}
 
   app.get('/', (request, response) => {
     response.send('<h1>Hello World!</h1>')
   })
   
-  app.get('/api/persons', (request, response) => {
+  app.get('/api/persons', (request, response, next) => {
     Person.find({}).then(result => {
         response.json(result)
-    })
+    }).catch((error) => next(error))
   })
 
-  app.post('/api/persons', (request, response) => {
+  app.get('/api/persons/:id', (request, response, next) => {
+    const id = request.params.id.trim()
+    Person.findById(id).then(result => {
+        if(result){
+            response.json(result)
+        }else{
+            response.status(404).end()
+        }
+        
+    }).catch((error) => next(error))
+  })
+
+  app.get('/info', (request, response, next) => {
+    Person.find({}).then((result)=>{
+        const count = result.length
+        const now = new Date
+        response.send(`<h1>Phonebook has info for ${count} people </h1><div>${now.toString()}</div>`)
+    }).catch((error) => next(error))
+  })
+
+  app.post('/api/persons', (request, response, next) => {
     const body = request.body
     const name = body.name
     const number = body.number
@@ -54,37 +66,26 @@ const randomId = (min) => {
                     response.json(result)
                 })
             }
-        })
-
+        }).catch((error) => next(error))
     }
   })
 
-  app.get('/info', (request, response) => {
-    const count = persons.length
-    const now = new Date
-    response.send(`<h1>Phonebook has info for ${count} people </h1><div>${now.toString()}</div>`)
-  })
-
-  app.get('/api/persons/:id', (request, response) => {
-    const id = request.params.id
-    console.log(id)
-    Person.find({_id:{$eq:id}}).then(result => {
-        console.log(result)
-        if(result.length > 0){
-            response.json(result)
-        }else{
-            response.status(400).end()
-        }
-    })
-  })
-
-  app.delete('/api/persons/:id', (request, response) => {
+  app.delete('/api/persons/:id', (request, response, next) => {
     const id = request.params.id
     Person.findOneAndDelete({_id:{$eq:id}}).then((result)=>{
         const formattedId = result._id.toString()
         response.json(result ? {id:formattedId} : null)
         response.status(204).end()
-    })
+    }).catch((error) => next(error))
+  })
+
+  app.put('/api/persons/:id', (request, response, next) => {
+    const id = request.params.id
+    const body = request.body
+    Person.findOneAndUpdate({_id:{$eq:id}},body).then((result)=>{
+        response.json(result)
+        response.status(204).end()
+    }).catch((error) => next(error))
   })
   
   const PORT = process.env.PORT || 3001
@@ -92,4 +93,9 @@ const randomId = (min) => {
     console.log(`Server running on port ${PORT}`)
   })
 
+  const errorHandler = (error, request, response, next) => {
+    response.status(500).end()
+  }
+  
+  app.use(errorHandler)
   
