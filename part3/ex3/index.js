@@ -55,7 +55,7 @@ const Person = require('./models/person')
     }else{
         Person.find({name:{$eq:name}}).then((result)=>{
             if(result.length > 0){
-                response.json({error:'name must be unique'})
+                response.json({error:'Name must be unique'})
             }else{
                 const newPerson = new Person({
                     name: name,
@@ -64,7 +64,7 @@ const Person = require('./models/person')
 
                 newPerson.save().then((result)=>{
                     response.json(result)
-                })
+                }).catch((error) => next(error))
             }
         }).catch((error) => next(error))
     }
@@ -94,7 +94,12 @@ const Person = require('./models/person')
   })
 
   const errorHandler = (error, request, response, next) => {
-    response.status(500).end()
+    if(error.name === 'CastError'){
+        return response.status(400).json({ error: 'malformed id' })
+    }else{
+        return response.status(400).json({ error: error.message })
+    }
+    next(error)
   }
   
   app.use(errorHandler)
