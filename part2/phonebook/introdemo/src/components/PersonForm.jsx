@@ -11,7 +11,6 @@ const PersonForm = ({
 }) => { 
 
     const handleNewName = (event) => {
-        setExist(false)
         setNewName(event.target.value)
     }
 
@@ -19,7 +18,7 @@ const PersonForm = ({
         setNewNumber(event.target.value)
     }
 
-    const isExist = (existName) => (persons.some(({name})=> name === existName))
+    const isExist = (existName) => (persons.find((person)=> person.name === existName))
 
     const setSuccessMessage = (name) => {
        return {
@@ -45,19 +44,20 @@ const PersonForm = ({
     const addPerson = (event) => {
         event.preventDefault()
         const exist = isExist(newName)
-        setExist(exist)
         if(!exist){
           const newPerson = {
             name:`${newName}`,
             number:`${newNumber}`,
-            id: `${persons.length + 1}`,
           };
 
-          const newPersons = persons.concat(newPerson)
+          
           
           personsService
             .create(newPerson)
-            .then(setPersons(newPersons))
+            .then((result)=>{
+                const newPersons = persons.concat(result)
+                setPersons(newPersons)
+            })
             .then(()=>{
                 setNotification(setSuccessMessage(newName))
                 setTimeout(() => {setNotification(setDefaultMessage) }, 5000)
@@ -66,6 +66,34 @@ const PersonForm = ({
                 setNotification(setSuccessMessage(newName))
                 setTimeout(() => {setNotification(setDefaultMessage) }, 5000)
             })
+        }else{
+            
+            if(newNumber.length > 0){
+                const updatePerson = {
+                    number:`${newNumber}`
+                };
+                console.log(exist)
+
+                personsService.update(exist.id,updatePerson).then((result)=>{
+                    const updatedPersons = persons.map((person)=>{
+                        console.log(person)
+                        console.log(exist)
+                        console.log(person.id === exist.id)
+                        console.log(person.id == exist.id)
+                        return person.id === result.id ? {...person,number:newNumber} : person;
+                    })
+
+                    console.log(updatedPersons)
+                    setPersons(updatedPersons)
+
+                    setNotification(setSuccessMessage(newName))
+                    setTimeout(() => {setNotification(setDefaultMessage) }, 5000)
+                })
+            }else{
+                setNotification(setErrorMessage(newName))
+                setTimeout(() => {setNotification(setDefaultMessage) }, 5000)
+            }
+            
         }
       }
 

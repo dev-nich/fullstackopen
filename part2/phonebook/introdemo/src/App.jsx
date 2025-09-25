@@ -18,7 +18,7 @@ const App = () => {
   useEffect(()=>{
     personsService
       .getAll()
-      .then( data=>setPersons(data))
+      .then(data=>setPersons(data))
   },[])
 
 
@@ -52,7 +52,6 @@ const App = () => {
         personsService={personsService}
         setNotification={setNotification}
       />
-      {exist ? alert(`${newName} is already added to phonebook`) : '' }
     </div>
   )
 }

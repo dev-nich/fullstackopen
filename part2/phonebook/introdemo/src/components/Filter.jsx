@@ -1,6 +1,6 @@
 const Filter = ({filter, setFilter, setExist}) => { 
     const handleFilterParam = (event) => {
-        setExist(false)
+        // setExist(false)
         setFilter(event.target.value)
     }
 
