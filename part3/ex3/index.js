@@ -14,29 +14,7 @@ app.use(logger)
 
 app.use(express.static('dist'))
 
-
-let persons = [
-    { 
-      "id": "1",
-      "name": "Arto Hellas", 
-      "number": "040-123456"
-    },
-    { 
-      "id": "2",
-      "name": "Ada Lovelace", 
-      "number": "39-44-5323523"
-    },
-    { 
-      "id": "3",
-      "name": "Dan Abramov", 
-      "number": "12-43-234345"
-    },
-    { 
-      "id": "4",
-      "name": "Mary Poppendieck", 
-      "number": "39-23-6423122"
-    }
-]
+const Person = require('./models/person')
 
 const max = 200;
 
@@ -51,21 +29,33 @@ const randomId = (min) => {
   })
   
   app.get('/api/persons', (request, response) => {
-    response.json(persons)
+    Person.find({}).then(result => {
+        response.json(result)
+    })
   })
 
   app.post('/api/persons', (request, response) => {
     const body = request.body
-    if(body.name === undefined || body.number === undefined){
+    const name = body.name
+    const number = body.number
+    if(name === undefined || number === undefined){
         response.json({error:'name or number missing'})
     }else{
-        const isExist = persons.find((p)=>{return p.name === body.name })
-        if(isExist){
-            response.json({error:'name must be unique'})
-        }else{
-            persons = persons.concat({...body, id:`${randomId(persons.length)}`})
-            response.json(persons)
-        }
+        Person.find({name:{$eq:name}}).then((result)=>{
+            if(result.length > 0){
+                response.json({error:'name must be unique'})
+            }else{
+                const newPerson = new Person({
+                    name: name,
+                    number: number,
+                })
+
+                newPerson.save().then((result)=>{
+                    response.json(result)
+                })
+            }
+        })
+
     }
   })
 
@@ -76,21 +66,25 @@ const randomId = (min) => {
   })
 
   app.get('/api/persons/:id', (request, response) => {
-    const param = request.params.id
-    const person = persons.find((p)=>{return p.id === param})
-
-    if(person){
-        response.json(person)
-    }else{
-        response.status(400).end()
-    }
+    const id = request.params.id
+    console.log(id)
+    Person.find({_id:{$eq:id}}).then(result => {
+        console.log(result)
+        if(result.length > 0){
+            response.json(result)
+        }else{
+            response.status(400).end()
+        }
+    })
   })
 
   app.delete('/api/persons/:id', (request, response) => {
-    const param = request.params.id
-    const person = persons.filter((p)=>{return p.id !== param})
-
-    response.status(204).end()
+    const id = request.params.id
+    Person.findOneAndDelete({_id:{$eq:id}}).then((result)=>{
+        const formattedId = result._id.toString()
+        response.json(result ? {id:formattedId} : null)
+        response.status(204).end()
+    })
   })
   
   const PORT = process.env.PORT || 3001
