@@ -1,8 +1,6 @@
 const personsRouter = require('express').Router()
 const Person = require('../models/person')
 
-
-
 // personsRouter.get('/', (request, response) => {
 //   response.send('<h1>Hello World!</h1>')
 // })
