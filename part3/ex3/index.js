@@ -14,13 +14,4 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
 
-const errorHandler = (error, request, response) => {
-  if(error.name === 'CastError'){
-    return response.status(400).json({ error: 'malformed id' })
-  }else{
-    return response.status(400).json({ error: error.message })
-  }
-}
-  
-app.use(errorHandler)
-  
+app.use(middleware.errorHandler)
