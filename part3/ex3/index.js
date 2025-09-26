@@ -1,18 +1,10 @@
 const express = require('express')
 const app = express()
 app.use(express.json())
-
 app.use(express.static('dist'))
 
-// logger middleware 
-const morgan = require('morgan')
-
-// display request body
-morgan.token('body', function getBody (req) {
-  return JSON.stringify(req.body)
-})
-const logger = morgan(':method :url :status :res[content-length] - :response-time ms :body')
-app.use(logger)
+const middleware = require('./utils/middleware')
+app.use(middleware.morganLogger)
 
 const personsRouter = require('./controllers/persons')
 app.use('/api/persons', personsRouter)
